@@ -1,0 +1,248 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Categorias{% endblock %}
+
+{% block navbar %}
+<div class="navbar">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Categoria</h1>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <ul>
+        <div class="col-md-6">
+            <a class="btn btn-primary" href="/categorias" role="button">Categorias</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Produtos</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Compras</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Fornecedores</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Vendas</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Vendedores</a>
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-2">
+        </div>
+</div>
+</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div id="viewPesquisar">
+    <div class="panel">
+        <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
+            <div class="col-md-12">
+                <div class="row" style="display: flex;align-items: center;">
+                    <h3>Pesquisar Categorias</h3>
+                    <input id="btnAdicionar" style="margin-left: 30px;" class="btn btn-warning" value="Adicionar"
+                        onclick="viewAdicionar()">
+                </div>
+                <hr class="my-4">
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="Nome">Nome</label>
+                    <input type="text" id="Nome" name="Nome" />
+                </div>
+                <div class="col-md-3">
+                    <label for="Ativa">Ativa</label>
+                    <input type="checkbox" id="Ativa" name="Ativa" />
+                    <label for="Inativa">Inativa</label>
+                    <input type="checkbox" id="Inativa" name="Inativa" />
+                </div>
+                <div class="col-md-3">
+                    <form method="get">
+                        <input id="btnPesquisar" class="btn btn-success" value="Pesquisar">
+                    </form>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding: 20px">
+        <table id="table" class="col-md-12">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="viewItem">
+    <div class="panel">
+        <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
+            <div class="col-md-12">
+                <div class="row" style="display: flex;align-items: center;">
+                    <h3>Adicionar/Editar Categoria</h3>
+                    <input id="btnVoltar" style="margin-left: 30px;" class="btn btn-warning" value="Voltar"
+                        onclick="viewPesquisar()">
+                </div>
+                <hr class="my-4">
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="Nome">Nome</label>
+                    <input type="text" id="NomeItem" name="Nome" />
+                </div>
+                <div class="col-md-2">
+                    <label for="Ativa">Ativa</label>
+                    <input type="checkbox" id="AtivaItem" name="Ativa" />
+
+                </div>
+                <div class="col-md-5">
+                    <label for="Descricao">Descrição</label>
+                    <input type="text" id="DescricaoItem" name="Descricao" />
+                </div>
+                <div class="col-md-2">
+                    <form method="get">
+                        <input id="btnSalvar" class="btn btn-success" value="Concluído">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles -%}
+{{super()}}
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='categorias.css')}}">
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#viewItem').hide();
+        $("#Ativa")[0].checked = true;
+        $("#Inativa")[0].checked = true;
+    });
+
+    var itemSelecionado = {};
+
+    var listaItems = [];
+
+    function viewPesquisar() {
+        $("#viewPesquisar").show();
+        $("#viewItem").hide();
+    }
+
+    function viewEditar(id) {
+        itemSelecionado = listaItems.find(item => { return item.id_categoria == id });
+        console.log("Item selecionado: ", itemSelecionado);
+        $("#NomeItem").val(itemSelecionado.tituloCategoria);
+        $("#AtivaItem")[0].checked = true;
+        $("#DescricaoItem").val(itemSelecionado.descricaoCategoria);
+        $("#viewPesquisar").hide();
+        $("#viewItem").show();
+    }
+
+    function viewAdicionar() {
+        itemSelecionado = {};
+        $("#NomeItem").val("");
+        $("#AtivaItem")[0].checked = true;
+        $("#DescricaoItem").val("");
+        $("#viewPesquisar").hide();
+        $("#viewItem").show();
+    }
+
+    function deletar() {
+        console.log("Deletar");
+    }
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+                return false;
+        }
+
+        return true;
+    }
+
+    function pesquisar() {
+        let nome = "";
+        if ($("#Nome").val() == "")
+            nome = " ";
+        else
+            nome = $("#Nome").val();
+
+        let ativa = $("#Ativa")[0].checked
+        let inativa = $("#Inativa")[0].checked
+        console.log("Clicou em pesquisar");
+        let stringGet = "/consultaCategorias/".concat(nome).concat("/").concat(ativa).concat("/").concat(inativa);
+        $.get(stringGet, function (data, status) {
+            listaItems = data;
+            $("#table tbody").empty()
+            $.each(data, function (d, item) {
+                $("#table tbody").append(
+                    "<tr>"
+                    + "<td>" + item.id_categoria + "</td>"
+                    + "<td>" + item.tituloCategoria + "</td>"
+                    + "<td>" + item.descricaoCategoria + "</td>"
+                    + "<td><a onclick=\"viewEditar(" + item.id_categoria + ")\">Editar</a><a onclick=\"deletar()\">Deletar</a>"
+                    + "</tr>")
+            })
+        });
+    }
+
+    $("#btnPesquisar").click(function () {
+        // action goes here!!
+        pesquisar();
+    });
+
+    $("#btnSalvar").click(function () {
+        // action goes here!!
+        if (isEmpty(itemSelecionado)) {
+            // Inserir
+
+            $.ajax({
+                url: '/insertCategoria',
+                data: JSON.stringify({
+                    tituloCategoria: $("#NomeItem").val(),
+                    descricaoCategoria: $("#DescricaoItem").val(),
+                    ativa: $("#AtivaItem")[0].checked
+                }, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                type: 'POST',
+                success: function (data, status) {
+                    alert("Inserido");
+                    viewPesquisar();
+                    pesquisar();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        else {
+            // Alterar
+            $.post("", function (data, status) {
+                alert("Inserido");
+                viewPesquisar();
+                pesquisar();
+            });
+        }
+    });
+</script>
+{{super()}}
+{% endblock %}
