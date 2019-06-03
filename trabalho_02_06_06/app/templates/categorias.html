@@ -52,13 +52,7 @@
                     <label for="Nome">Nome</label>
                     <input type="text" id="Nome" name="Nome" />
                 </div>
-                <div class="col-md-3">
-                    <label for="Ativa">Ativa</label>
-                    <input type="checkbox" id="Ativa" name="Ativa" />
-                    <label for="Inativa">Inativa</label>
-                    <input type="checkbox" id="Inativa" name="Inativa" />
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <form method="get">
                         <input id="btnPesquisar" class="btn btn-success" value="Pesquisar">
                     </form>
@@ -73,6 +67,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Fg. Ativo</th>
                     <th>Nome</th>
                     <th>Descrição</th>
                     <th>Ação</th>
@@ -100,12 +95,13 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-3">
+                    <input type="hidden" id="IdItem" name="IdItem">
                     <label for="Nome">Nome</label>
                     <input type="text" id="NomeItem" name="Nome" />
                 </div>
                 <div class="col-md-2">
                     <label for="Ativa">Ativa</label>
-                    <input type="checkbox" id="AtivaItem" name="Ativa" />
+                    <input type="number" id="AtivaItem" name="Ativa" />
 
                 </div>
                 <div class="col-md-5">
@@ -133,8 +129,6 @@
 <script>
     $(document).ready(function () {
         $('#viewItem').hide();
-        $("#Ativa")[0].checked = true;
-        $("#Inativa")[0].checked = true;
     });
 
     var itemSelecionado = {};
@@ -149,9 +143,10 @@
     function viewEditar(id) {
         itemSelecionado = listaItems.find(item => { return item.id_categoria == id });
         console.log("Item selecionado: ", itemSelecionado);
-        $("#NomeItem").val(itemSelecionado.tituloCategoria);
-        $("#AtivaItem")[0].checked = true;
-        $("#DescricaoItem").val(itemSelecionado.descricaoCategoria);
+        $("#NomeItem").val(itemSelecionado.titulocategoria);
+        $("#IdItem").val(id);
+        $("#AtivaItem").val(itemSelecionado.fg_ativo);
+        $("#DescricaoItem").val(itemSelecionado.descricaocategoria);
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
@@ -159,14 +154,25 @@
     function viewAdicionar() {
         itemSelecionado = {};
         $("#NomeItem").val("");
-        $("#AtivaItem")[0].checked = true;
+        $("#AtivaItem").val("");
         $("#DescricaoItem").val("");
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
 
-    function deletar() {
+    function deletar(id) {
         console.log("Deletar");
+        $.ajax({
+                url: '/deleteCategoria/' + id,
+                type: 'DELETE',
+                success: function (data, status) {
+                    alert("Deletado");
+                    pesquisar();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
     }
 
     function isEmpty(obj) {
@@ -179,26 +185,29 @@
     }
 
     function pesquisar() {
-        let nome = "";
-        if ($("#Nome").val() == "")
-            nome = " ";
-        else
-            nome = $("#Nome").val();
-
-        let ativa = $("#Ativa")[0].checked
-        let inativa = $("#Inativa")[0].checked
+        let nome = $("#Nome").val();
+    
         console.log("Clicou em pesquisar");
-        let stringGet = "/consultaCategorias/".concat(nome).concat("/").concat(ativa).concat("/").concat(inativa);
+        let stringGet = "";
+        if(nome == "")
+            stringGet = "/consultaCategoriasAll";
+        else
+            stringGet = "/consultaCategorias/".concat(nome);
+
         $.get(stringGet, function (data, status) {
             listaItems = data;
+            if(listaItems.length == 0) {
+                alert("Nenhum resultado");
+            }
             $("#table tbody").empty()
             $.each(data, function (d, item) {
                 $("#table tbody").append(
                     "<tr>"
                     + "<td>" + item.id_categoria + "</td>"
-                    + "<td>" + item.tituloCategoria + "</td>"
-                    + "<td>" + item.descricaoCategoria + "</td>"
-                    + "<td><a onclick=\"viewEditar(" + item.id_categoria + ")\">Editar</a><a onclick=\"deletar()\">Deletar</a>"
+                    + "<td>" + item.fg_ativo + "</td>"
+                    + "<td>" + item.titulocategoria + "</td>"
+                    + "<td>" + item.descricaocategoria + "</td>"
+                    + "<td><a onclick=\"viewEditar(" + item.id_categoria + ")\">Editar</a><a onclick=\"deletar(" + item.id_categoria + ")\">Deletar</a>"
                     + "</tr>")
             })
         });
@@ -213,13 +222,12 @@
         // action goes here!!
         if (isEmpty(itemSelecionado)) {
             // Inserir
-
             $.ajax({
                 url: '/insertCategoria',
                 data: JSON.stringify({
-                    tituloCategoria: $("#NomeItem").val(),
-                    descricaoCategoria: $("#DescricaoItem").val(),
-                    ativa: $("#AtivaItem")[0].checked
+                    titulocategoria: $("#NomeItem").val(),
+                    descricaocategoria: $("#DescricaoItem").val(),
+                    ativa: $("#AtivaItem").val(),
                 }, null, '\t'),
                 contentType: 'application/json;charset=UTF-8',
                 type: 'POST',
@@ -236,10 +244,24 @@
 
         else {
             // Alterar
-            $.post("", function (data, status) {
-                alert("Inserido");
-                viewPesquisar();
-                pesquisar();
+            $.ajax({
+                url: '/updateCategoria',
+                data: JSON.stringify({
+                    titulocategoria: $("#NomeItem").val(),
+                    descricaocategoria: $("#DescricaoItem").val(),
+                    ativa: $("#AtivaItem").val(),
+                    id_categoria: $("#IdItem").val()
+                }, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                type: 'PUT',
+                success: function (data, status) {
+                    alert("Atualizado");
+                    viewPesquisar();
+                    pesquisar();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
             });
         }
     });
