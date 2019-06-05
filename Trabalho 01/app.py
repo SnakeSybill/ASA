@@ -1,79 +1,54 @@
-from flask import Flask, url_for, request, json, jsonify
-from json import dumps
-from cliente import Cliente
-from produto import Produto
-from vendas import Vendas
+#Nome da aplicação na nuvem
+service: mobile-serverless-app 
 
-app = Flask(__name__)
+# Plugins utilizados em desenvolvimento
+plugins:
+  - serverless-webpack
+  - serverless-offline
 
-cliente = []
-produto = []
-vendas = []
+# Configuração de plugins
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
 
-@app.route('/')
-def api_root():
-    return 'Seja bem-vindo!'
+# Provedor dos serviços de nuvem
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
 
-@app.route('/cadCliente', methods = ['POST'])
-def cadastrarCliente():
-    global cliente
-    req_data = request.get_json()
+# Configurações do IAM
+iamRoleStatements:
+    # Neste caso a configuração permite que as funções executem as seguintes ações 
+    - Effect: Allow 
+      Action:           
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+    # Recursos nos quais as ações são permitidas (todos os bancos na região us-east-1)
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
 
-    id = len(cliente)
-    nome = req_data['nome']
-    new_cliente = Cliente(id, nome)
-    cliente.append(new_cliente)
-    res = {'status': 'ok'}
-    return jsonify(res)
-
-
-@app.route('/cadProduto', methods = ['POST'])
-def cadastrarProduto():
-    global produto
-    req_data = request.get_json()
-
-    id = len(produto)
-    produto_desc = req_data['produto']
-    preco = req_data['preco']
-    new_produto = Produto(id, produto_desc, preco)
-    produto.append(new_produto)
-    res = {'status': 'ok'}
-    return jsonify(res)
-
-@app.route('/registrarVenda', methods = ['POST'])
-def registrarVendas():
-    global vendas
-
-    req_data = request.get_json()
-    idCliente = req_data['idCliente']
-    idProduto = req_data['idProduto']
-    quantidade = req_data['quantidade']   
-    preco = 0
-    for i in produto:
-        if (i.getId() == idProduto):
-            preco = i.getPreco()
-    
-    new_venda = Vendas(idCliente, idProduto, quantidade, preco * quantidade)
-    vendas.append(new_venda) 
-    print(list(p.getTotalVendas() for p in vendas))
-    res = {'status': 'ok'}
-    return jsonify(res)
-
-@app.route('/totalVendasCliente/<id>', methods=['GET'])
-def totalVendasCliente(id):
-    id = int(id)
-    usuario = []
-    acumulador = 0
-    for i in vendas:
-        if i.getId() == id:
-            acumulador += i.getTotalVendas()
-    usuario = {'id': id, 'Total': acumulador}
-    return jsonify(usuario)
-
-@app.route('/todosClientes', methods = ['GET'])
-def todosClientes():
-    clientes = []
-    for i in cliente:
-        c = {'id': i.getId(), 'nome': i.getNome()}
-        clientes.append(c)
-    return jsonify(clientes)
+# Funções desenvolvidas
+functions:
+  # Função PutUsuario
+  PutUsuario:
+    # Arquivo onde a função se encontra
+    handler: handler.PutUsuario
+    # Eventos que disparam a função
+    events:
+      - http:
+          # Rota de API para a função
+          path: put-usuario
+          # Método HTTP suportado
+          method: post
+          # Permite CORS
+          cors: true
+          # Autorizada pelo usuário do IAM configurado
+          authorizer: aws_iam
+          

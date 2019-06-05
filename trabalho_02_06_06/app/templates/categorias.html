@@ -15,7 +15,7 @@
         <div class="col-md-6">
             <a class="btn btn-primary" href="/categorias" role="button">Categorias</a>
             <a class="btn btn-primary" href="/categorias" role="button">Produtos</a>
-            <a class="btn btn-primary" href="/categorias" role="button">Compras</a>
+            <a class="btn btn-primary" href="/compras" role="button">Compras</a>
             <a class="btn btn-primary" href="/categorias" role="button">Fornecedores</a>
             <a class="btn btn-primary" href="/categorias" role="button">Vendas</a>
             <a class="btn btn-primary" href="/categorias" role="button">Vendedores</a>
@@ -102,7 +102,6 @@
                 <div class="col-md-2">
                     <label for="Ativa">Ativa</label>
                     <input type="number" id="AtivaItem" name="Ativa" />
-
                 </div>
                 <div class="col-md-5">
                     <label for="Descricao">Descrição</label>
@@ -121,7 +120,7 @@
 
 {% block styles -%}
 {{super()}}
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='categorias.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='main.css')}}">
 {% endblock %}
 
 {% block scripts %}

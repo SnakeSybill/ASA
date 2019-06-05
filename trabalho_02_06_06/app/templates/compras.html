@@ -1,25 +1,337 @@
-<!DOCTYPE html>
-<html>
+{% extends "bootstrap/base.html" %}
 
-<head>
-    <title>Título</title>
-</head>
+{% block title %}Compras{% endblock %}
 
-<body>
+{% block navbar %}
+<div class="navbar">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Compra</h1>
+        </div>
+    </div>
+</div>
+<div class="row">
     <ul>
-        {% for number in lista_disc %}
-        <li>
-            {{ number }}
-        </li>
-        {% endfor %}
-    </ul>
-    <ol>
-        {% for number in lista_disc %}
-        <li>
-            {{ number }}
-        </li>
-        {% endfor %}
-    </ol>
-</body>
+        <div class="col-md-6">
+            <a class="btn btn-primary" href="/categorias" role="button">Categorias</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Produtos</a>
+            <a class="btn btn-primary" href="/compras" role="button">Compras</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Fornecedores</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Vendas</a>
+            <a class="btn btn-primary" href="/categorias" role="button">Vendedores</a>
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-2">
+        </div>
+</div>
+</ul>
+</div>
+{% endblock %}
 
-</html>
+{% block content %}
+
+<div id="viewPesquisar">
+    <div class="panel">
+        <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
+            <div class="col-md-12">
+                <div class="row" style="display: flex;align-items: center;">
+                    <h3>Pesquisar Compras</h3>
+                    <input id="btnAdicionar" style="margin-left: 30px;" class="btn btn-warning" value="Adicionar"
+                        onclick="viewAdicionar()">
+                </div>
+                <hr class="my-4">
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="Produto">Produto</label>
+                    <select id="Produto" name="Produto">
+                        <option value="" selected>Selecione...</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <form method="get">
+                        <input id="btnPesquisar" class="btn btn-success" value="Pesquisar">
+                    </form>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding: 20px">
+        <table id="table" class="col-md-12">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Produto</th>
+                    <th>Fornecedor</th>
+                    <th>Categoria</th>
+                    <th>Data</th>
+                    <th>Quantdade</th>
+                    <th>Valor Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="viewItem">
+    <div class="panel">
+        <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
+            <div class="col-md-12">
+                <div class="row" style="display: flex;align-items: center;">
+                    <h3>Adicionar/Editar Compra</h3>
+                    <input id="btnVoltar" style="margin-left: 30px;" class="btn btn-warning" value="Voltar"
+                        onclick="viewPesquisar()">
+                </div>
+                <hr class="my-4">
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <input type="hidden" id="IdItem" name="IdItem">
+                    <label for="ProdutoItem">Produto</label>
+                    <select id="ProdutoItem" name="ProdutoItem">
+                        <option value="" selected>Selecione...</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="FornecedorItem">Fornecedor</label>
+                    <select id="FornecedorItem" name="FornecedorItem">
+                        <option value="" selected>Selecione...</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="CategoriaItem">Categoria</label>
+                    <select id="CategoriaItem" name="CategoriaItem">
+                        <option value="" selected>Selecione...</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="DataItem">Data</label>
+                    <input type="date" id="DataItem" name="Data">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="QuantidadeItem">Quantidade</label>
+                    <input type="number" id="QuantidadeItem" name="QuantidadeItem" />
+                </div>
+                <div class="col-md-3">
+                    <label for="TotalItem">Total</label>
+                    <input type="number" id="TotalItem" name="TotalItem" />
+                </div>
+                <div class="col-md-3">
+                    <label for="fg_ativoItem">Fg. Ativo</label>
+                    <input type="number" id="fg_ativoItem" name="fg_ativoItem" />
+                </div>
+                <div class="col-md-3">
+                    <form method="get">
+                        <input id="btnSalvar" class="btn btn-success" value="Concluído">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles -%}
+{{super()}}
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='main.css')}}">
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#viewItem').hide();
+
+        $.get("/consultaProdutosAll", function (data, status) {
+            $("#Produto").empty();
+            $("#Produto").append(
+                    "<option value=\"\">Selecione...</td>")
+            $.each(data, function (d, item) {
+                $("#Produto").append(
+                    "<option value=\""+ item.id_produto + "\">" + item.nomeProduto + "</td>")
+            })
+
+            $("#ProdutoItem").empty()
+            $.each(data, function (d, item) {
+                $("#ProdutoItem").append(
+                    "<option value=\""+ item.id_produto + "\">" + item.nomeProduto + "</td>")
+            })
+        });
+
+    });
+
+    var itemSelecionado = {};
+
+    var listaItems = [];
+
+    function viewPesquisar() {
+        $("#viewPesquisar").show();
+        $("#viewItem").hide();
+    }
+
+    function viewEditar(id) {
+        itemSelecionado = listaItems.find(item => { return item.id_compra == id });
+        console.log("Item selecionado: ", itemSelecionado);
+        $('#IdItem').val(id);
+        //$('#ProdutoItem').val(itemSelecionado.produto.id_produto);
+        //$('#FornecedorItem')
+        //$('#CategoriaItem')
+        $('#DataItem').val(itemSelecionado.dataCompra);
+        $('#QuantidadeItem').val(itemSelecionado.quantidade);
+        $('#TotalItem').val(itemSelecionado.valorTotal);
+        $('#fg_ativoItem').val(itemSelecionado.fg_ativo);
+
+        $("#viewPesquisar").hide();
+        $("#viewItem").show();
+    }
+
+    function viewAdicionar() {
+        itemSelecionado = {};
+        $('#IdItem').val();
+        //$('#ProdutoItem').val(itemSelecionado.produto.id_produto);
+        //$('#FornecedorItem')
+        //$('#CategoriaItem')
+        $('#DataItem').val("");
+        $('#QuantidadeItem').val("");
+        $('#TotalItem').val("");
+        $('#fg_ativoItem').val("");
+
+        $("#viewPesquisar").hide();
+        $("#viewItem").show();
+    }
+
+    function deletar(id) {
+        console.log("Deletar");
+        $.ajax({
+            url: '/deleteCompra/' + id,
+            type: 'DELETE',
+            success: function (data, status) {
+                alert("Deletado");
+                pesquisar();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+                return false;
+        }
+
+        return true;
+    }
+
+    function pesquisar() {
+        let produto = $("#Produto").children("option:selected").val();
+
+        console.log("Clicou em pesquisar");
+        let stringGet = "";
+        if (produto == "")
+            stringGet = "/consultaComprasAll";
+        else
+            stringGet = "/consultaCompras/".concat(produto);
+
+        $.get(stringGet, function (data, status) {
+            listaItems = data;
+            if (listaItems.length == 0) {
+                alert("Nenhum resultado");
+            }
+
+            $("#table tbody").empty()
+            $.each(data, function (d, item) {
+                $("#table tbody").append(
+                    "<tr>"
+                    + "<td>" + item.id_compra + "</td>"
+                    + "<td>" + item.produto.nomeProduto + "</td>"
+                    + "<td>" + item.fornecedor.razaoSocial + "</td>"
+                    + "<td>" + item.categoria.titulocategoria + "</td>"
+                    + "<td>" + item.dataCompra + "</td>"
+                    + "<td>" + item.quantidade + "</td>"
+                    + "<td>" + item.valorTotal + "</td>"
+                    + "<td><a onclick=\"viewEditar(" + item.id_compra + ")\">Editar</a><a onclick=\"deletar(" + item.id_compra + ")\">Deletar</a>"
+                    + "</tr>")
+            })
+        });
+    }
+
+    $("#btnPesquisar").click(function () {
+        // action goes here!!
+        pesquisar();
+    });
+
+    $("#btnSalvar").click(function () {
+        // action goes here!!
+        if (isEmpty(itemSelecionado)) {
+            // Inserir
+            $.ajax({
+                url: '/insertCompra',
+                data: JSON.stringify({
+                    id_produto: $('#ProdutoItem').children("option:selected").val(),
+                    id_fornecedor: $('#FornecedorItem').children("option:selected").val(),
+                    id_categoria: $('#CategoriaItem').children("option:selected").val(),
+                    dataCompra: $('#DataItem').val(),
+                    valorTotal: $('#QuantidadeItem').val(),
+                    quantidade: $('#TotalItem').val(),
+                    fg_ativo: $('#fg_ativoItem').val(),
+                }, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                type: 'POST',
+                success: function (data, status) {
+                    alert("Inserido");
+                    viewPesquisar();
+                    pesquisar();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        else {
+            // Alterar
+            $.ajax({
+                url: '/updateCompra',
+                data: JSON.stringify({
+                    id_compra: ('#IdItem').val(),
+                    id_produto: $('#ProdutoItem').children("option:selected").val(),
+                    id_fornecedor: $('#FornecedorItem').children("option:selected").val(),
+                    id_categoria: $('#CategoriaItem').children("option:selected").val(),
+                    dataCompra: $('#DataItem').val(),
+                    valorTotal: $('#QuantidadeItem').val(),
+                    quantidade: $('#TotalItem').val(),
+                    fg_ativo: $('#fg_ativoItem').val(),
+                }, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                type: 'PUT',
+                success: function (data, status) {
+                    alert("Atualizado");
+                    viewPesquisar();
+                    pesquisar();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+</script>
+{{super()}}
+{% endblock %}
