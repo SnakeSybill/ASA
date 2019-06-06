@@ -1,12 +1,12 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}Compras{% endblock %}
+{% block title %}Vendas{% endblock %}
 
 {% block navbar %}
 <div class="navbar">
     <div class="row">
         <div class="col-md-12">
-            <h1>Compra</h1>
+            <h1>Venda</h1>
         </div>
     </div>
 </div>
@@ -17,7 +17,7 @@
             <a class="btn btn-primary" href="/categorias" role="button">Produtos</a>
             <a class="btn btn-primary" href="/compras" role="button">Compras</a>
             <a class="btn btn-primary" href="/categorias" role="button">Fornecedores</a>
-            <a class="btn btn-primary" href="/categorias" role="button">Vendas</a>
+            <a class="btn btn-primary" href="/vendas" role="button">Vendas</a>
             <a class="btn btn-primary" href="/categorias" role="button">Vendedores</a>
         </div>
         <div class="col-md-2">
@@ -38,7 +38,7 @@
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
                 <div class="row" style="display: flex;align-items: center;">
-                    <h3>Pesquisar Compras</h3>
+                    <h3>Pesquisar Vendas</h3>
                     <input id="btnAdicionar" style="margin-left: 30px;" class="btn btn-warning" value="Adicionar"
                         onclick="viewAdicionar()">
                 </div>
@@ -70,7 +70,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Produto</th>
-                    <th>Fornecedor</th>
+                    <th>Vendedor</th>
                     <th>Categoria</th>
                     <th>Data</th>
                     <th>Quantdade</th>
@@ -89,7 +89,7 @@
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
                 <div class="row" style="display: flex;align-items: center;">
-                    <h3>Adicionar/Editar Compra</h3>
+                    <h3>Adicionar/Editar Venda</h3>
                     <input id="btnVoltar" style="margin-left: 30px;" class="btn btn-warning" value="Voltar"
                         onclick="viewPesquisar()">
                 </div>
@@ -107,8 +107,8 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="FornecedorItem">Fornecedor</label>
-                    <select id="FornecedorItem" name="FornecedorItem">
+                    <label for="VendedorItem">Vendedor</label>
+                    <select id="VendedorItem" name="VendedorItem">
                         <option value="" selected>Selecione...</option>
                     </select>
                 </div>
@@ -186,13 +186,13 @@
             })
         });
 
-        $.get("/consultaFornecedoresAll", function (data, status) {
-            $("#FornecedorItem").empty();
-            $("#FornecedorItem").append(
+        $.get("/consultaVendedoresAll", function (data, status) {
+            $("#VendedorItem").empty();
+            $("#VendedorItem").append(
                 "<option value=\"\">Selecione...</td>")
             $.each(data, function (d, item) {
-                $("#FornecedorItem").append(
-                    "<option value=\"" + item.id_fornecedor + "\">" + item.razaosocial + "</td>")
+                $("#VendedorItem").append(
+                    "<option value=\"" + item.id_vendedor + "\">" + item.nome + "</td>")
             })
         });
     });
@@ -207,8 +207,8 @@
     }
 
     function viewEditar(id) {
-        itemSelecionado = listaItems.find(item => { return item.id_compra == id });
-        var data = new Date(itemSelecionado.datacompra);
+        itemSelecionado = listaItems.find(item => { return item.id_venda == id });
+        var data = new Date(itemSelecionado.datavenda);
         var day = ("0" + data.getDate()).slice(-2);
         var month = ("0" + (data.getMonth() + 1)).slice(-2);
         var today = data.getFullYear() + "-" + (month) + "-" + (day);
@@ -216,7 +216,7 @@
         $("#viewItem").show();
         $('#IdItem').val(id);
         $("#ProdutoItem option[value=" + itemSelecionado.produto.id_produto + "]").attr('selected', true);
-        $("#FornecedorItem option[value=" + itemSelecionado.fornecedor.id_fornecedor + "]").attr('selected', true);
+        $("#VendedorItem option[value=" + itemSelecionado.vendedor.id_vendedor + "]").attr('selected', true);
         $("#CategoriaItem option[value=" + itemSelecionado.categoria.id_categoria + "]").attr('selected', true);
         $('#DataItem').val(today);
         $('#QuantidadeItem').val(itemSelecionado.quantidade);
@@ -232,7 +232,7 @@
         $("#viewItem").show();
         $('#IdItem').val();
         $("#ProdutoItem option[value='']").attr('selected', true);
-        $("#FornecedorItem option[value='']").attr('selected', true);
+        $("#VendedorItem option[value='']").attr('selected', true);
         $("#CategoriaItem option[value='']").attr('selected', true);
         $('#DataItem').val("");
         $('#QuantidadeItem').val("");
@@ -245,7 +245,7 @@
     function deletar(id) {
         console.log("Deletar");
         $.ajax({
-            url: '/deleteCompra/' + id,
+            url: '/deleteVenda/' + id,
             type: 'DELETE',
             success: function (data, status) {
                 alert("Deletado");
@@ -272,9 +272,9 @@
         console.log("Clicou em pesquisar");
         let stringGet = "";
         if (produto == "")
-            stringGet = "/consultaComprasAll";
+            stringGet = "/consultaVendasAll";
         else
-            stringGet = "/consultaCompras/".concat(produto);
+            stringGet = "/consultaVendas/".concat(produto);
 
         $.get(stringGet, function (data, status) {
             listaItems = data;
@@ -286,14 +286,14 @@
             $.each(data, function (d, item) {
                 $("#table tbody").append(
                     "<tr>"
-                    + "<td>" + item.id_compra + "</td>"
+                    + "<td>" + item.id_venda + "</td>"
                     + "<td>" + item.produto.nomeproduto + "</td>"
-                    + "<td>" + item.fornecedor.razaosocial + "</td>"
+                    + "<td>" + item.vendedor.razaosocial + "</td>"
                     + "<td>" + item.categoria.titulocategoria + "</td>"
-                    + "<td>" + item.datacompra + "</td>"
+                    + "<td>" + item.datavenda + "</td>"
                     + "<td>" + item.quantidade + "</td>"
                     + "<td>" + item.valortotal + "</td>"
-                    + "<td><a onclick=\"viewEditar(" + item.id_compra + ")\">Editar</a><a onclick=\"deletar(" + item.id_compra + ")\">Deletar</a>"
+                    + "<td><a onclick=\"viewEditar(" + item.id_venda + ")\">Editar</a><a onclick=\"deletar(" + item.id_venda + ")\">Deletar</a>"
                     + "</tr>")
             })
         });
@@ -309,12 +309,12 @@
         if (isEmpty(itemSelecionado)) {
             // Inserir
             $.ajax({
-                url: '/insertCompra',
+                url: '/insertVenda',
                 data: JSON.stringify({
                     id_produto: $('#ProdutoItem').children("option:selected").val(),
-                    id_fornecedor: $('#FornecedorItem').children("option:selected").val(),
+                    id_vendedor: $('#VendedorItem').children("option:selected").val(),
                     id_categoria: $('#CategoriaItem').children("option:selected").val(),
-                    datacompra: $('#DataItem').val(),
+                    datavenda: $('#DataItem').val(),
                     valortotal: $('#QuantidadeItem').val(),
                     quantidade: $('#TotalItem').val(),
                     fg_ativo: $('#fg_ativoItem').val(),
@@ -335,13 +335,13 @@
         else {
             // Alterar
             $.ajax({
-                url: '/updateCompra',
+                url: '/updateVenda',
                 data: JSON.stringify({
-                    id_compra: $('#IdItem').val(),
+                    id_venda: $('#IdItem').val(),
                     id_produto: $('#ProdutoItem').children("option:selected").val(),
-                    id_fornecedor: $('#FornecedorItem').children("option:selected").val(),
+                    id_vendedor: $('#VendedorItem').children("option:selected").val(),
                     id_categoria: $('#CategoriaItem').children("option:selected").val(),
-                    datacompra: $('#DataItem').val(),
+                    datavenda: $('#DataItem').val(),
                     valortotal: $('#QuantidadeItem').val(),
                     quantidade: $('#TotalItem').val(),
                     fg_ativo: $('#fg_ativoItem').val(),
