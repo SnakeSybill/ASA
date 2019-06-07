@@ -5,7 +5,7 @@
 {% block navbar %}
 <div class="navbar">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 titulo">
             <h1>Vendedor</h1>
         </div>
     </div>
@@ -37,9 +37,9 @@
     <div class="panel">
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
-                <div class="row" style="display: flex;align-items: center;">
-                    <h3>Pesquisar Vendedores</h3>
-                    <input id="btnAdicionar" style="margin-left: 30px;" class="btn btn-warning" value="Adicionar"
+                <div class="row pesquisaadd" >
+                    <h3 class="col-md-3">Pesquisar Vendedores</h3>
+                    <input class="col-md-3 btn btn-warning" id="btnAdicionar" type="button" style="margin-left: 30px;" class="btn btn-warning" value="Adicionar"
                         onclick="viewAdicionar()">
                 </div>
                 <hr class="my-4">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-6">
                     <form method="get">
-                        <input id="btnPesquisar" class="btn btn-success" value="Pesquisar">
+                        <input botao id="btnPesquisar" type="button" class="btn btn-success" value="Pesquisar">
                     </form>
                 </div>
                 <div class="col-md-2">
@@ -73,6 +73,7 @@
                     <th>Carteira Trabalho</th>
                     <th>Telefone</th>
                     <th>Data Admissão</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -85,9 +86,9 @@
     <div class="panel">
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
-                <div class="row" style="display: flex;align-items: center;">
-                    <h3>Adicionar/Editar Vendedores</h3>
-                    <input id="btnVoltar" style="margin-left: 30px;" class="btn btn-warning" value="Voltar"
+                <div class="row pesquisaadd">
+                    <h3 class="col-md-3">Adicionar/Editar Vendedores</h3>
+                    <input class="col-md-3 btn btn-warning" id="btnVoltar" type="button" style="margin-left: 30px;" class="btn btn-warning" value="Voltar"
                         onclick="viewPesquisar()">
                 </div>
                 <hr class="my-4">
@@ -98,34 +99,37 @@
             <div class="row">
                 <div class="col-md-3">
                     <input type="hidden" id="IdItem" name="IdItem">
-                    <label for="Nome">Nome</label>
-                    <input type="text" id="NomeItem" name="Nome" />
+                    <label for="NomeItem">Nome</label>
+                    <input type="text" id="NomeItem" name="NomeItem" />
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label for="Ativo">Ativo</label>
                     <input type="number" id="AtivaItem" name="Ativo" />
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-3">
                     <label for="CPF">CPF</label>
                     <input type="text" id="Cpf" name="Cpf" />
                 </div>
-                <div class="col-md-5">
-                    <label for="CarteiraTrabalho">Carteira de Trabalho</label>
+                <div class="col-md-3">
+                    <label for="CarteiraTrabalho">Cart. Trabalho</label>
                     <input type="text" id="CarteiraTrabalho" name="CarteiraTrabalho" />
                 </div>
-                <div class="col-md-5">
+            </div>
+            <div class="row">
+                <div class="col-md-3">
                     <label for="Telefone">Telefone</label>
                     <input type="text" id="Telefone" name="Telefone" />
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <label for="DataAdmissao">Data Admissão</label>
-                    <input type="text" id="DataAdmissao" name="DataAdmissao" />
+                    <input type="date" id="DataAdmissao" name="DataAdmissao">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <form method="get">
-                        <input id="btnSalvar" class="btn btn-success" value="Concluído">
+                        <input botao id="btnSalvar" type="button" class="btn btn-success" value="Concluído">
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
@@ -155,26 +159,34 @@
 
     function viewEditar(id) {
         itemSelecionado = listaItems.find(item => { return item.id_vendedor == id });
+        var data = new Date(itemSelecionado.dataadmissao);
+        var day = ("0" + data.getDate()).slice(-2);
+        var month = ("0" + (data.getMonth() + 1)).slice(-2);
+        var dataadmissao = data.getFullYear() + "-" + (month) + "-" + (day);
         console.log("Item selecionado: ", itemSelecionado);
         $("#Cpf").val(itemSelecionado.cpf);
         $("#IdItem").val(id);
         $("#AtivaItem").val(itemSelecionado.fg_ativo);
-        $("#Nome").val(itemSelecionado.nome);
+        $("#NomeItem").val(itemSelecionado.nome);
         $("#CarteiraTrabalho").val(itemSelecionado.carteiratrabalho);
         $("#Telefone").val(itemSelecionado.telefone);
-        $("#DataAdmissao").val(itemSelecionado.dataadmissao);
+        $("#DataAdmissao").val(dataadmissao);
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
 
     function viewAdicionar() {
+        var data = new Date();
+        var day = ("0" + data.getDate()).slice(-2);
+        var month = ("0" + (data.getMonth() + 1)).slice(-2);
+        var today = data.getFullYear() + "-" + (month) + "-" + (day);
         itemSelecionado = {};
         $("#Cpf").val("");
         $("#AtivaItem").val("");
-        $("#Nome").val("");
+        $("#NomeItem").val("");
         $("#CarteiraTrabalho").val("");
         $("#Telefone").val("");
-        $("#DataAdmissao").val("");
+        $("#DataAdmissao").val(today);
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
@@ -190,6 +202,7 @@
             },
             error: function (error) {
                 console.log(error);
+                alert("Não foi possível excluir. Talvez já exista alguém referenciando este objeto.");
             }
         });
     }
@@ -204,6 +217,7 @@
     }
 
     function pesquisar() {
+        debugger;
         let nome = $("#Nome").val();
 
         console.log("Clicou em pesquisar");
@@ -248,7 +262,7 @@
                 url: '/insertVendedor',
                 data: JSON.stringify({
                     cpf: $("#Cpf").val(),
-                    nome: $("#Nome").val(),
+                    nome: $("#NomeItem").val(),
                     telefone: $("#Telefone").val(),
                     carteiratrabalho: $("#CarteiraTrabalho").val(),
                     dataadmissao: $("#DataAdmissao").val(),
@@ -272,8 +286,9 @@
             $.ajax({
                 url: '/updateVendedor',
                 data: JSON.stringify({
+                    id_vendedor: $("#IdItem").val(),
                     cpf: $("#Cpf").val(),
-                    nome: $("#Nome").val(),
+                    nome: $("#NomeItem").val(),
                     telefone: $("#Telefone").val(),
                     carteiratrabalho: $("#CarteiraTrabalho").val(),
                     dataadmissao: $("#DataAdmissao").val(),

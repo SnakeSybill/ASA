@@ -8,3 +8,32 @@ tfoot {
     background-color: #333;
     color: #fff;
 }
+
+label {
+    display: block
+}
+
+input[type="text"], select {
+    width: -webkit-fill-available;
+}
+
+input[type="number"] {
+    width: -webkit-fill-available;
+}
+
+input[type="date"] {
+    width: -webkit-fill-available;
+}
+
+.btn {
+    margin-top: 20px;
+    width: auto;
+}
+
+.titulo {
+    margin-left: 40px;
+}
+
+.pesquisaadd {
+    margin-left: 20px;
+}
