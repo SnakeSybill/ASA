@@ -30,7 +30,7 @@ def lista_vendas():
 
 @app.route('/vendedores')
 def lista_vendedores():
-    return render_template("categorias.html", consultacategorias = [])
+    return render_template("vendedores.html", consultacategorias = [])
 
 @app.route('/produtos')
 def lista_produtos():

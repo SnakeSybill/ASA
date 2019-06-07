@@ -1,12 +1,12 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}Fornecedores{% endblock %}
+{% block title %}Vendedores{% endblock %}
 
 {% block navbar %}
 <div class="navbar">
     <div class="row">
         <div class="col-md-12">
-            <h1>Fornecedor</h1>
+            <h1>Vendedor</h1>
         </div>
     </div>
 </div>
@@ -38,7 +38,7 @@
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
                 <div class="row" style="display: flex;align-items: center;">
-                    <h3>Pesquisar Fornecedores</h3>
+                    <h3>Pesquisar Vendedores</h3>
                     <input id="btnAdicionar" style="margin-left: 30px;" class="btn btn-warning" value="Adicionar"
                         onclick="viewAdicionar()">
                 </div>
@@ -68,11 +68,11 @@
                 <tr>
                     <th>ID</th>
                     <th>Fg. Ativo</th>
-                    <th>CNPJ</th>
-                    <th>Razão Social</th>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                    <th>Carteira Trabalho</th>
                     <th>Telefone</th>
-                    <th>Endereço</th>
-                    <th>Contato</th>
+                    <th>Data Admissão</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,7 +86,7 @@
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
                 <div class="row" style="display: flex;align-items: center;">
-                    <h3>Adicionar/Editar Fornecedor</h3>
+                    <h3>Adicionar/Editar Vendedores</h3>
                     <input id="btnVoltar" style="margin-left: 30px;" class="btn btn-warning" value="Voltar"
                         onclick="viewPesquisar()">
                 </div>
@@ -98,30 +98,28 @@
             <div class="row">
                 <div class="col-md-3">
                     <input type="hidden" id="IdItem" name="IdItem">
+                    <label for="Nome">Nome</label>
+                    <input type="text" id="NomeItem" name="Nome" />
                 </div>
                 <div class="col-md-2">
                     <label for="Ativo">Ativo</label>
                     <input type="number" id="AtivaItem" name="Ativo" />
                 </div>
                 <div class="col-md-5">
-                    <label for="CNPJ">CNPJ</label>
-                    <input type="text" id="Cnpj" name="Cnpj" />
+                    <label for="CPF">CPF</label>
+                    <input type="text" id="Cpf" name="Cpf" />
                 </div>
                 <div class="col-md-5">
-                    <label for="RazaoSocial">Razão Social</label>
-                    <input type="text" id="RazaoSocial" name="RazaoSocial" />
+                    <label for="CarteiraTrabalho">Carteira de Trabalho</label>
+                    <input type="text" id="CarteiraTrabalho" name="CarteiraTrabalho" />
                 </div>
                 <div class="col-md-5">
                     <label for="Telefone">Telefone</label>
                     <input type="text" id="Telefone" name="Telefone" />
                 </div>
                 <div class="col-md-5">
-                    <label for="Endereco">Endereço</label>
-                    <input type="text" id="Endereco" name="Endereco" />
-                </div>
-                <div class="col-md-5">
-                    <label for="Contato">Contato</label>
-                    <input type="text" id="Contato" name="Contato" />
+                    <label for="DataAdmissao">Data Admissão</label>
+                    <input type="text" id="DataAdmissao" name="DataAdmissao" />
                 </div>
                 <div class="col-md-2">
                     <form method="get">
@@ -156,27 +154,27 @@
     }
 
     function viewEditar(id) {
-        itemSelecionado = listaItems.find(item => { return item.id_fornecedor == id });
+        itemSelecionado = listaItems.find(item => { return item.id_vendedor == id });
         console.log("Item selecionado: ", itemSelecionado);
-        $("#Cnpj").val(itemSelecionado.cnpj);
+        $("#Cpf").val(itemSelecionado.cpf);
         $("#IdItem").val(id);
         $("#AtivaItem").val(itemSelecionado.fg_ativo);
-        $("#RazaoSocial").val(itemSelecionado.razaosocial);
-        $("#Contato").val(itemSelecionado.contato);
+        $("#Nome").val(itemSelecionado.nome);
+        $("#CarteiraTrabalho").val(itemSelecionado.carteiratrabalho);
         $("#Telefone").val(itemSelecionado.telefone);
-        $("#Endereco").val(itemSelecionado.endereco);
+        $("#DataAdmissao").val(itemSelecionado.dataadmissao);
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
 
     function viewAdicionar() {
         itemSelecionado = {};
-        $("#Cnpj").val("");
+        $("#Cpf").val("");
         $("#AtivaItem").val("");
-        $("#RazaoSocial").val("");
-        $("#Contato").val("");
+        $("#Nome").val("");
+        $("#CarteiraTrabalho").val("");
         $("#Telefone").val("");
-        $("#Endereco").val("");
+        $("#DataAdmissao").val("");
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
@@ -184,7 +182,7 @@
     function deletar(id) {
         console.log("Deletar");
         $.ajax({
-            url: '/deleteFornecedor/' + id,
+            url: '/deleteVendedor/' + id,
             type: 'DELETE',
             success: function (data, status) {
                 alert("Deletado");
@@ -211,9 +209,9 @@
         console.log("Clicou em pesquisar");
         let stringGet = "";
         if (nome == "")
-            stringGet = "/consultaFornecedoresAll";
+            stringGet = "/consultaVendedoresAll";
         else
-            stringGet = "/consultaFornecedores/".concat(nome);
+            stringGet = "/consultaVendedores/".concat(nome);
 
         $.get(stringGet, function (data, status) {
             listaItems = data;
@@ -224,14 +222,14 @@
             $.each(data, function (d, item) {
                 $("#table tbody").append(
                     "<tr>"
-                    + "<td>" + item.id_fornecedor + "</td>"
+                    + "<td>" + item.id_vendedor + "</td>"
                     + "<td>" + item.fg_ativo + "</td>"
-                    + "<td>" + item.cnpj + "</td>"
-                    + "<td>" + item.razaosocial + "</td>"
+                    + "<td>" + item.cpf + "</td>"
+                    + "<td>" + item.nome + "</td>"
                     + "<td>" + item.telefone + "</td>"
-                    + "<td>" + item.endereco + "</td>"
-                    + "<td>" + item.contato + "</td>"
-                    + "<td><a onclick=\"viewEditar(" + item.id_fornecedor + ")\">Editar</a><a onclick=\"deletar(" + item.id_fornecedor + ")\">Deletar</a>"
+                    + "<td>" + item.carteiratrabalho + "</td>"
+                    + "<td>" + item.dataadmissao + "</td>"
+                    + "<td><a onclick=\"viewEditar(" + item.id_vendedor + ")\">Editar</a><a onclick=\"deletar(" + item.id_vendedor + ")\">Deletar</a>"
                     + "</tr>")
             })
         });
@@ -247,13 +245,13 @@
         if (isEmpty(itemSelecionado)) {
             // Inserir
             $.ajax({
-                url: '/insertFornecedor',
+                url: '/insertVendedor',
                 data: JSON.stringify({
-                    cnpj: $("#Cnpj").val(),
-                    razaosocial: $("#RazaoSocial").val(),
+                    cpf: $("#Cpf").val(),
+                    nome: $("#Nome").val(),
                     telefone: $("#Telefone").val(),
-                    contato: $("#Contato").val(),
-                    endereco: $("#Endereco").val(),
+                    carteiratrabalho: $("#CarteiraTrabalho").val(),
+                    dataadmissao: $("#DataAdmissao").val(),
                     fg_ativo: $("#AtivaItem").val(),
                 }, null, '\t'),
                 contentType: 'application/json;charset=UTF-8',
@@ -272,13 +270,13 @@
         else {
             // Alterar
             $.ajax({
-                url: '/updateFornecedor',
+                url: '/updateVendedor',
                 data: JSON.stringify({
-                    cnpj: $("#Cnpj").val(),
-                    razaosocial: $("#RazaoSocial").val(),
+                    cpf: $("#Cpf").val(),
+                    nome: $("#Nome").val(),
                     telefone: $("#Telefone").val(),
-                    contato: $("#Contato").val(),
-                    endereco: $("#Endereco").val(),
+                    carteiratrabalho: $("#CarteiraTrabalho").val(),
+                    dataadmissao: $("#DataAdmissao").val(),
                     fg_ativo: $("#AtivaItem").val(),
                 }, null, '\t'),
                 contentType: 'application/json;charset=UTF-8',
