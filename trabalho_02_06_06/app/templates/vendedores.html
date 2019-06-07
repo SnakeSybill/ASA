@@ -1,12 +1,12 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}Categorias{% endblock %}
+{% block title %}Vendedores{% endblock %}
 
 {% block navbar %}
 <div class="navbar">
     <div class="row">
         <div class="col-md-12">
-            <h1>Categoria</h1>
+            <h1>Vendedor</h1>
         </div>
     </div>
 </div>
@@ -38,7 +38,7 @@
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
                 <div class="row" style="display: flex;align-items: center;">
-                    <h3>Pesquisar Categorias</h3>
+                    <h3>Pesquisar Vendedores</h3>
                     <input id="btnAdicionar" style="margin-left: 30px;" class="btn btn-warning" value="Adicionar"
                         onclick="viewAdicionar()">
                 </div>
@@ -68,9 +68,11 @@
                 <tr>
                     <th>ID</th>
                     <th>Fg. Ativo</th>
+                    <th>CPF</th>
                     <th>Nome</th>
-                    <th>Descrição</th>
-                    <th>Ação</th>
+                    <th>Carteira Trabalho</th>
+                    <th>Telefone</th>
+                    <th>Data Admissão</th>
                 </tr>
             </thead>
             <tbody>
@@ -84,7 +86,7 @@
         <div class="panel-title" style="margin-top: 40px; margin-bottom: 40px">
             <div class="col-md-12">
                 <div class="row" style="display: flex;align-items: center;">
-                    <h3>Adicionar/Editar Categoria</h3>
+                    <h3>Adicionar/Editar Vendedores</h3>
                     <input id="btnVoltar" style="margin-left: 30px;" class="btn btn-warning" value="Voltar"
                         onclick="viewPesquisar()">
                 </div>
@@ -100,12 +102,24 @@
                     <input type="text" id="NomeItem" name="Nome" />
                 </div>
                 <div class="col-md-2">
-                    <label for="Ativa">Ativa</label>
-                    <input type="number" id="AtivaItem" name="Ativa" />
+                    <label for="Ativo">Ativo</label>
+                    <input type="number" id="AtivaItem" name="Ativo" />
                 </div>
                 <div class="col-md-5">
-                    <label for="Descricao">Descrição</label>
-                    <input type="text" id="DescricaoItem" name="Descricao" />
+                    <label for="CPF">CPF</label>
+                    <input type="text" id="Cpf" name="Cpf" />
+                </div>
+                <div class="col-md-5">
+                    <label for="CarteiraTrabalho">Carteira de Trabalho</label>
+                    <input type="text" id="CarteiraTrabalho" name="CarteiraTrabalho" />
+                </div>
+                <div class="col-md-5">
+                    <label for="Telefone">Telefone</label>
+                    <input type="text" id="Telefone" name="Telefone" />
+                </div>
+                <div class="col-md-5">
+                    <label for="DataAdmissao">Data Admissão</label>
+                    <input type="text" id="DataAdmissao" name="DataAdmissao" />
                 </div>
                 <div class="col-md-2">
                     <form method="get">
@@ -140,21 +154,27 @@
     }
 
     function viewEditar(id) {
-        itemSelecionado = listaItems.find(item => { return item.id_categoria == id });
+        itemSelecionado = listaItems.find(item => { return item.id_vendedor == id });
         console.log("Item selecionado: ", itemSelecionado);
-        $("#NomeItem").val(itemSelecionado.titulocategoria);
+        $("#Cpf").val(itemSelecionado.cpf);
         $("#IdItem").val(id);
         $("#AtivaItem").val(itemSelecionado.fg_ativo);
-        $("#DescricaoItem").val(itemSelecionado.descricaocategoria);
+        $("#Nome").val(itemSelecionado.nome);
+        $("#CarteiraTrabalho").val(itemSelecionado.carteiratrabalho);
+        $("#Telefone").val(itemSelecionado.telefone);
+        $("#DataAdmissao").val(itemSelecionado.dataadmissao);
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
 
     function viewAdicionar() {
         itemSelecionado = {};
-        $("#NomeItem").val("");
+        $("#Cpf").val("");
         $("#AtivaItem").val("");
-        $("#DescricaoItem").val("");
+        $("#Nome").val("");
+        $("#CarteiraTrabalho").val("");
+        $("#Telefone").val("");
+        $("#DataAdmissao").val("");
         $("#viewPesquisar").hide();
         $("#viewItem").show();
     }
@@ -162,7 +182,7 @@
     function deletar(id) {
         console.log("Deletar");
         $.ajax({
-            url: '/deleteCategoria/' + id,
+            url: '/deleteVendedor/' + id,
             type: 'DELETE',
             success: function (data, status) {
                 alert("Deletado");
@@ -189,9 +209,9 @@
         console.log("Clicou em pesquisar");
         let stringGet = "";
         if (nome == "")
-            stringGet = "/consultaCategoriasAll";
+            stringGet = "/consultaVendedoresAll";
         else
-            stringGet = "/consultaCategorias/".concat(nome);
+            stringGet = "/consultaVendedores/".concat(nome);
 
         $.get(stringGet, function (data, status) {
             listaItems = data;
@@ -202,11 +222,14 @@
             $.each(data, function (d, item) {
                 $("#table tbody").append(
                     "<tr>"
-                    + "<td>" + item.id_categoria + "</td>"
+                    + "<td>" + item.id_vendedor + "</td>"
                     + "<td>" + item.fg_ativo + "</td>"
-                    + "<td>" + item.titulocategoria + "</td>"
-                    + "<td>" + item.descricaocategoria + "</td>"
-                    + "<td><a onclick=\"viewEditar(" + item.id_categoria + ")\">Editar</a><a onclick=\"deletar(" + item.id_categoria + ")\">Deletar</a>"
+                    + "<td>" + item.cpf + "</td>"
+                    + "<td>" + item.nome + "</td>"
+                    + "<td>" + item.telefone + "</td>"
+                    + "<td>" + item.carteiratrabalho + "</td>"
+                    + "<td>" + item.dataadmissao + "</td>"
+                    + "<td><a onclick=\"viewEditar(" + item.id_vendedor + ")\">Editar</a><a onclick=\"deletar(" + item.id_vendedor + ")\">Deletar</a>"
                     + "</tr>")
             })
         });
@@ -222,10 +245,13 @@
         if (isEmpty(itemSelecionado)) {
             // Inserir
             $.ajax({
-                url: '/insertCategoria',
+                url: '/insertVendedor',
                 data: JSON.stringify({
-                    titulocategoria: $("#NomeItem").val(),
-                    descricaocategoria: $("#DescricaoItem").val(),
+                    cpf: $("#Cpf").val(),
+                    nome: $("#Nome").val(),
+                    telefone: $("#Telefone").val(),
+                    carteiratrabalho: $("#CarteiraTrabalho").val(),
+                    dataadmissao: $("#DataAdmissao").val(),
                     fg_ativo: $("#AtivaItem").val(),
                 }, null, '\t'),
                 contentType: 'application/json;charset=UTF-8',
@@ -244,12 +270,14 @@
         else {
             // Alterar
             $.ajax({
-                url: '/updateCategoria',
+                url: '/updateVendedor',
                 data: JSON.stringify({
-                    titulocategoria: $("#NomeItem").val(),
-                    descricaocategoria: $("#DescricaoItem").val(),
+                    cpf: $("#Cpf").val(),
+                    nome: $("#Nome").val(),
+                    telefone: $("#Telefone").val(),
+                    carteiratrabalho: $("#CarteiraTrabalho").val(),
+                    dataadmissao: $("#DataAdmissao").val(),
                     fg_ativo: $("#AtivaItem").val(),
-                    id_categoria: $("#IdItem").val()
                 }, null, '\t'),
                 contentType: 'application/json;charset=UTF-8',
                 type: 'PUT',

@@ -22,7 +22,7 @@ def lista_compras():
 
 @app.route('/fornecedores')
 def lista_fornecedores():
-    return render_template("categorias.html", consultacategorias = [])
+    return render_template("fornecedores.html", consultafornecedores = [])
 
 @app.route('/vendas')
 def lista_vendas():
@@ -30,11 +30,11 @@ def lista_vendas():
 
 @app.route('/vendedores')
 def lista_vendedores():
-    return render_template("categorias.html", consultacategorias = [])
+    return render_template("vendedores.html", consultacategorias = [])
 
 @app.route('/produtos')
 def lista_produtos():
-    return render_template("categorias.html", consultacategorias = [])
+    return render_template("produtos.html", consultaprodutos = [])
 
 
 
