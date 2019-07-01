@@ -87,13 +87,13 @@ class Produtos(Base):
     
     def consultaProdutos(self):
         session = db_session()
-        produtos = session.query(Produtos, Categorias).outerjoin(Categorias, Produtos.id_categoria == Categorias.id_categoria).filter(Produtos.nomeproduto.like("%"+ self.nomeproduto +"%")).all()
+        produtos = session.query(Produtos, Categorias, Fornecedores).outerjoin(Categorias, Produtos.id_categoria == Categorias.id_categoria).outerjoin(Fornecedores, Produtos.id_fornecedor == Fornecedores.id_fornecedor).filter(Produtos.nomeproduto.like("%"+ self.nomeproduto +"%")).all()
         session.close()
         return produtos
 
     def consultaProdutosAll(self):
         session = db_session()
-        produtos = session.query(Produtos, Categorias).outerjoin(Categorias, Produtos.id_categoria == Categorias.id_categoria).all()
+        produtos = session.query(Produtos, Categorias, Fornecedores).outerjoin(Categorias, Produtos.id_categoria == Categorias.id_categoria).outerjoin(Fornecedores, Produtos.id_fornecedor == Fornecedores.id_fornecedor).all()
         session.close()
         return produtos
 

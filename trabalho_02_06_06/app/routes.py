@@ -198,7 +198,11 @@ def consultaprodutos(nomeproduto):
                              },
                 "valorunitario": str(i[0].valorunitario), 
                 "quantidade": i[0].quantidade, 
-                "quantidademinima": i[0].quantidademinima
+                "quantidademinima": i[0].quantidademinima,
+                "fornecedor": {
+                    "id_fornecedor": i[0].id_fornecedor,
+                    "razaosocial": i[2].razaosocial
+                }
             }
         consultaProdutosReturn.append(f)
     return jsonify(consultaProdutosReturn)
@@ -221,7 +225,11 @@ def consultaprodutosAll():
                              },
                 "valorunitario": str(i[0].valorunitario), 
                 "quantidade": i[0].quantidade, 
-                "quantidademinima": i[0].quantidademinima
+                "quantidademinima": i[0].quantidademinima,
+                "fornecedor": {
+                    "id_fornecedor": i[0].id_fornecedor,
+                    "razaosocial": i[2].razaosocial
+                }
             }
         consultaProdutosReturn.append(f)
     return jsonify(consultaProdutosReturn)
