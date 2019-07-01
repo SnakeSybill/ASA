@@ -1,0 +1,4 @@
+flask
+flask_bootstrap
+sqlalchemy
+psycopg2
