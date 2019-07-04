@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 
 
 
-engine = create_engine('postgresql://postgres:hambotregga@localhost:5432/teste_asa', echo = True)
+engine = create_engine('postgresql://postgres:hambotregga@database:5432/teste_asa', echo = True)
 db_session = scoped_session(sessionmaker(autocommit=False,autoflush=False,bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
